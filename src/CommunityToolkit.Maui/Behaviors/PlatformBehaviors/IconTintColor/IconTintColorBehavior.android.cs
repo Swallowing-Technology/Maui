@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 using Android.Graphics;
 using Android.Widget;
 using Microsoft.Maui.Platform;
@@ -52,16 +53,23 @@ public partial class IconTintColorBehavior
 			return;
 		}
 
-		switch (nativeView)
+		try
 		{
-			case ImageView image:
-				SetImageViewTintColor(image, color);
-				break;
-			case AButton button:
-				SetButtonTintColor(button, color);
-				break;
-			default:
-				throw new NotSupportedException($"{nameof(IconTintColorBehavior)} only currently supports Android.Widget.Button and {nameof(ImageView)}.");
+			switch (nativeView)
+			{
+				case ImageView image:
+					SetImageViewTintColor(image, color);
+					break;
+				case AButton button:
+					SetButtonTintColor(button, color);
+					break;
+				default:
+					throw new NotSupportedException($"{nameof(IconTintColorBehavior)} only currently supports Android.Widget.Button and {nameof(ImageView)}.");
+			}
+		}
+		catch (ObjectDisposedException)
+		{
+			Trace.WriteLine("IconTintColorBehavior is already disposed.");
 		}
 
 
@@ -121,17 +129,24 @@ public partial class IconTintColorBehavior
 			return;
 		}
 
-		switch (nativeView)
+		try
 		{
-			case ImageView image:
-				image.ClearColorFilter();
-				break;
-			case AButton button:
-				foreach (var drawable in button.GetCompoundDrawables())
-				{
-					drawable?.ClearColorFilter();
-				}
-				break;
+			switch (nativeView)
+			{
+				case ImageView image:
+					image.ClearColorFilter();
+					break;
+				case AButton button:
+					foreach (var drawable in button.GetCompoundDrawables())
+					{
+						drawable?.ClearColorFilter();
+					}
+					break;
+			}
+		}
+		catch (ObjectDisposedException)
+		{
+			Trace.WriteLine("IconTintColorBehavior is already disposed.");
 		}
 	}
 }
